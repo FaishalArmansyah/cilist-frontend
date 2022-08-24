@@ -7,13 +7,7 @@ pipeline {
     stages{
       stage('Edit ENV') {
         steps {
-          script {
-            if ( env.GIT_BRANCH == 'staging' ) {
               sh "echo REACT_APP_BACKEND=${URL_STAGING}:5000 > .env"
-            }
-            else if ( env.GIT_BRANCH == 'main' ) {
-              sh "echo REACT_APP_BACKEND=${URL_PROD}:5000 > .env"
-            }
           }
         }
       }
