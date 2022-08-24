@@ -7,12 +7,16 @@ pipeline {
     stages{
       stage('Edit ENV') {
         steps {
-          sh "echo REACT_APP_BACKEND=${URL_PROD} > .env"
+          script {
+            if ( env.GIT_BRANCH == 'origin/main' ) {
+              sh "echo REACT_APP_BACKEND=${URL_PROD} > .env"
+            }
+          }
         }
       }
       stage('Build with Docker') {
         steps {
-          sh "docker build -f Dockerfile -t ${REGISTRY}/${APPS}:$main-${BUILD_NUMBER} -t ${REGISTRY}/${APPS}:latest ."
+          sh "docker build -f Dockerfile -t ${REGISTRY}/${APPS}:main-${BUILD_NUMBER} -t ${REGISTRY}/${APPS}:latest ."
         }
       }
     }
