@@ -12,7 +12,7 @@ pipeline {
       }
       stage('Build with Docker') {
         steps {
-          sh "docker build -f Dockerfile -t ${REGISTRY}/${APPS}:${GIT_BRANCH}-${BUILD_NUMBER} -t ${REGISTRY}/${APPS}:latest ."
+          sh "docker build -f Dockerfile -t ${REGISTRY}/${APPS}:$main-${BUILD_NUMBER} -t ${REGISTRY}/${APPS}:latest ."
         }
       }
     }
