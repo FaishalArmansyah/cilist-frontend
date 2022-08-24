@@ -19,12 +19,12 @@ pipeline {
       }
       stage('Build with Docker') {
         steps {
-          sh "docker build -f Dockerfile -t ${REGISTRY}/${APPS}:${BRANCH_NAME}-${BUILD_NUMBER} -t ${REGISTRY}/${APPS}:latest ."
+          sh "docker build -f Dockerfile -t ${REGISTRY}/${APPS}:${GIT_BRANCH}-${BUILD_NUMBER} -t ${REGISTRY}/${APPS}:latest ."
         }
       }
       stage('Publish Docker Image') {
         steps {
-          sh "docker push ${REGISTRY}/${APPS}:${BRANCH_NAME}-${BUILD_NUMBER}"
+          sh "docker push ${REGISTRY}/${APPS}:${GIT_BRANCH}-${BUILD_NUMBER}"
           sh "docker push ${REGISTRY}/${APPS}:latest"
         }
       }
