@@ -7,7 +7,7 @@ pipeline {
     stages{
       stage('Edit ENV') {
         steps {
-          sh "echo REACT_APP_BACKEND=${URL_PROD}:5000 > .env"
+          sh "echo REACT_APP_BACKEND=${URL_PROD} > .env"
         }
       }
       stage('Build with Docker') {
