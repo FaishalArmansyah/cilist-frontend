@@ -25,7 +25,7 @@ pipeline {
       stage('Publish Docker Image') {
         steps {
           sh "docker push ${REGISTRY}/${APPS}:${GIT_BRANCH}-${BUILD_NUMBER}"
-          sh "docker push ${REGISTRY}/${APPS}:latest"
+          sh "docker push ${REGISTRY}/${APPS}:${GIT_BRANCH}-latest"
         }
       }
     }
