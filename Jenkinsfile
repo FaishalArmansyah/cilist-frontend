@@ -8,7 +8,10 @@ pipeline {
       stage('Edit ENV') {
         steps {
           script {
-            if ( env.GIT_BRANCH == 'origin/main' ) {
+            if ( env.GIT_BRANCH == 'staging' ) {
+              sh "echo REACT_APP_BACKEND=${URL_STAGING} > .env"
+            }
+            else if ( env.GIT_BRANCH == 'main' ) {
               sh "echo REACT_APP_BACKEND=${URL_PROD} > .env"
             }
           }
@@ -16,7 +19,13 @@ pipeline {
       }
       stage('Build with Docker') {
         steps {
-          sh "docker build -f Dockerfile -t ${REGISTRY}/${APPS}:main-${BUILD_NUMBER} -t ${REGISTRY}/${APPS}:latest ."
+          sh "docker build -f Dockerfile -t ${REGISTRY}/${APPS}:${GIT_BRANCH}-${BUILD_NUMBER} -t ${REGISTRY}/${APPS}:latest ."
+        }
+      }
+      stage('Publish Docker Image') {
+        steps {
+          sh "docker push ${REGISTRY}/${APPS}:${GIT_BRANCH}-${BUILD_NUMBER}"
+          sh "docker push ${REGISTRY}/${APPS}:latest"
         }
       }
     }
