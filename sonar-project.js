@@ -1,6 +1,6 @@
 const sonarqubeScanner = require('sonarqube-scanner');
 sonarqubeScanner({
-  serverUrl: 'http://13.229.63.138:9000',
+  serverUrl: 'http://sonar.smallproject.my.id:9000',
   options : {
     'sonar.projectDescription': 'cilist-frontend',
     'sonar.projectName': 'cilist-frontend',
