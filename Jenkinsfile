@@ -1,8 +1,8 @@
 pipeline {
   agent any
   environment {
-        REGISTRY = '898130718046.dkr.ecr.ap-south-1.amazonaws.com'
-        APPS = 'big-project-frontend'
+        REGISTRY = '128532453810.dkr.ecr.ap-southeast-1.amazonaws.com'
+        APPS = 'cilist-frontend'
   }
     stages{
       stage('Edit ENV') {
@@ -19,13 +19,13 @@ pipeline {
       }
       stage('Build with Docker') {
         steps {
-          sh "docker build -f Dockerfile -t ${REGISTRY}/${APPS}:${GIT_BRANCH}-${BUILD_NUMBER} -t ${REGISTRY}/${APPS}:latest ."
+          sh "docker build -f Dockerfile -t ${REGISTRY}/${APPS}:${GIT_BRANCH}-${BUILD_NUMBER} -t ${REGISTRY}/${APPS}:${GIT_BRANCH}-latest ."
         }
       }
       stage('Publish Docker Image') {
         steps {
           sh "docker push ${REGISTRY}/${APPS}:${GIT_BRANCH}-${BUILD_NUMBER}"
-          sh "docker push ${REGISTRY}/${APPS}:latest"
+          sh "docker push ${REGISTRY}/${APPS}:${GIT_BRANCH}-latest"
         }
       }
       stage('Deploy to Kubernetes') {
@@ -49,7 +49,7 @@ pipeline {
             deleteDir()
         }
         success {
-            echo 'I succeeded!'
+            echo 'I Completed & succeeded!'
         }
         failure {
             echo 'I failed :('
