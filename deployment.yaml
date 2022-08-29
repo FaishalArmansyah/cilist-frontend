@@ -35,10 +35,10 @@ spec:
         image: 128532453810.dkr.ecr.ap-southeast-1.amazonaws.com/cilist-frontend:IMAGE_TAG
         resources:
           limits:
-            memory: 200Mi
-            cpu: 100m
+            memory: 400Mi
+            cpu: 150m
           requests:
-            memory: 80Mi
-            cpu: 50m
+            memory: 160Mi
+            cpu: 100m
         ports:
         - containerPort: 3000
