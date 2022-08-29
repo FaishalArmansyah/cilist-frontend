@@ -1,27 +1,45 @@
 pipeline {
   agent any
   environment {
-        REGISTRY = '128532453810.dkr.ecr.ap-southeast-1.amazonaws.com'
-        APPS = 'cilist-frontend'
+        REGISTRY = '898130718046.dkr.ecr.ap-south-1.amazonaws.com'
+        APPS = 'big-project-frontend'
   }
     stages{
       stage('Edit ENV') {
         steps {
           script {
             if ( env.GIT_BRANCH == 'staging' ) {
-              sh "echo REACT_APP_BACKEND=${URL_STAGING} > .env"
+              sh "sed -i 's/APPS-URL/${URL_STAGING}/g' .env"
             }
             else if ( env.GIT_BRANCH == 'main' ) {
-              sh "sed -i 's/LINK-UAT/${URL_PROD}/g' .env"
+              sh "sed -i 's/APPS-URL/${URL_PROD}/g' .env"
             }
           }
         }
       }
-      stage('tampilkan env') {
+      stage('Build with Docker') {
+        steps {
+          sh "docker build -f Dockerfile -t ${REGISTRY}/${APPS}:${GIT_BRANCH}-${BUILD_NUMBER} -t ${REGISTRY}/${APPS}:latest ."
+        }
+      }
+      stage('Publish Docker Image') {
+        steps {
+          sh "docker push ${REGISTRY}/${APPS}:${GIT_BRANCH}-${BUILD_NUMBER}"
+          sh "docker push ${REGISTRY}/${APPS}:latest"
+        }
+      }
+      stage('Deploy to Kubernetes') {
         steps {
           script {
-            sh "cat .env"
-          }  
+            if ( env.GIT_BRANCH == 'staging' ) {
+              sh "sed -i 's/IMAGE_TAG/${GIT_BRANCH}-${BUILD_NUMBER}/g' deployment.yaml"
+              sh "kubectl apply -f deployment.yaml -n staging"
+            }
+            else if ( env.GIT_BRANCH == 'main' ) {
+              sh "sed -i 's/IMAGE_TAG/${GIT_BRANCH}-${BUILD_NUMBER}/g' deployment.yaml"
+              sh "kubectl apply -f deployment.yaml -n production"
+            }
+          }
         }
       }
     }
@@ -31,7 +49,7 @@ pipeline {
             deleteDir()
         }
         success {
-            echo 'I completed & succeeded!'
+            echo 'I succeeded!'
         }
         failure {
             echo 'I failed :('
